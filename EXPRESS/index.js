@@ -67,7 +67,7 @@ app.get('/', async (solicitud, respuesta) => {
         }
     } */
 
-    async function actualizarDatos(tickerN, ultimoPrecio) {
+    async function actualizarDatos(ultimoPrecio) {
         const time = new Date();
         const month = time.getMonth() + 1;
         let fechaActual = time.getFullYear() + '-' + month + '-' + time.getDate();
@@ -81,6 +81,6 @@ app.get('/', async (solicitud, respuesta) => {
     }
 });
 
-app.listen(PUERTO || process.env.PORT, () => {
-    console.log(`Escuchando y ejecutando en el puerto: ${PUERTO || process.env.PORT}`);
-})
+app.listen(process.env.PORT || PUERTO, () => {
+    console.log(`Escuchando y ejecutando en el puerto: ${process.env.PORT || PUERTO}`);
+});

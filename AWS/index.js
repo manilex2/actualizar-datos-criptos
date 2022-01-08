@@ -58,7 +58,5 @@ exports.handler = async function (event) {
             });
             console.log(`Se actualizo el precio actual de ${ultimoPrecio.symbol}`);
     }
-
-    //conexion.destroy();
     return promise;
 };
