@@ -54,7 +54,7 @@ ID_HOJA=**********
 
 Es un archivo que contiene la configuración de credenciales para poder conectarse a la API de Google Api.
 
-### package.json
+#### package.json
 
 Se crea por primera vez usando el comando ```npm init```. Contiene el titulo el nombre de la aplicación, la versión, descripción, keywords, author, licencia, los scripts, las dependencias tanto global como dependencias solo a nivel de desarrollo.
 
@@ -85,6 +85,10 @@ En este caso se configura de la siguiente manera:
 }
 ```
 
+#### package-lock.json
+
+Es un archivo que se crea automáticamente al instalar las dependencias contiene el listado de dependencias totales necesarias que pueden necesitar nuestras dependencias puestas en el package.json. **NOTA: Este archivo no debe modificarse**
+
 #### keys.js
 
 En este archivo se establece un ```module.exports``` para que sea exportado a otro archivo. En este caso se exporta el objeto database junto con sus propiedades. ```process.env``` se usa para llamar a las variables de entorno configuradas en el .env
@@ -100,4 +104,89 @@ module.exports = {
     }
 }
 ```
+
+#### index.js
+
+Se permite con ```dotenv``` el uso de variables de entorno.
+
+```JS
+require('dotenv').config();
+```
+
+Se importa el framework ```Express.js``` que permite usar JavaScript desde el lado del servidor
+
+```JS
+const express = require('express');
+```
+
+Se importa la libreria ```morgan``` que permite ver los códigos de respuesta al consultar nuestro servidor
+
+```JS
+const morgan = require('morgan');
+```
+
+Se inicializa ```Express.js```
+
+```JS
+const app = express();
+```
+
+Se importa la libreria ```mysql``` para conectarnos a la Base de Datos MySQL
+
+```JS
+const mysql = require('mysql2');
+```
+
+Se importa la libreria ```node-fetch``` que permite hacer solicitudes HTTP a las URL y obtener sus datos.
+
+```JS
+const fetch = require('node-fetch');
+```
+
+Se configura un puerto para nuestro servidor local
+
+```JS
+const PUERTO = 4300;
+```
+
+Se importa la libreria ```googleapis``` para conectarnos a Google Api
+
+```JS
+const {google} = require('googleapis');
+```
+
+Se configura el autorizador de Google pasandole al ```keyFile``` nuestro ```credentials.json``` y el ```scopes``` en este caso será para usar Google Spreadsheets.
+
+```JS
+const auth = new google.auth.GoogleAuth({
+    keyFile: 'credentials.json',
+    scopes: 'https://www.googleapis.com/auth/spreadsheets'
+});
+```
+
+Importamos nuestro archivo ```keys.js``` que habíamos exportado
+
+```JS
+const { database } = require('./keys');
+```
+
+Creamos nuestra conexión a la base de datos, introduciendo la propiedad ```host, user, password, port, database``` exportado de nuestro archivo ```keys.js```
+
+```JS
+const conexion = mysql.createConnection({
+    host: database.host,
+    user: database.user,
+    password: database.password,
+    port: database.port,
+    database: database.database
+});
+```
+
+Creamos dos variables vacias de tipo ```Array``` para luego almacenar datos en ellos.
+
+```JS
+var ticker = [];
+var propost = [];
+```
+
 
