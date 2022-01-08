@@ -39,7 +39,6 @@ app.get('/', async (solicitud, respuesta) => {
                 ticker.push(request.values[i][0]);
                 propost.push(request.values[i][4]);
             }
-            
         }
     }
 

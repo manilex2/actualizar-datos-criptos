@@ -27,6 +27,14 @@ cd EXPRESS
 npm install
 ```
 
+### Inicializar nuestra apliación
+
+Se ejecuta usando el comando ```npm run (nombre del script que configuramos en el package.json)```. En nuestro caso:
+
+```BATCH
+npm run dev
+```
+
 ### Explicación del código
 
 #### node_modules
@@ -91,7 +99,7 @@ Es un archivo que se crea automáticamente al instalar las dependencias contiene
 
 #### keys.js
 
-En este archivo se establece un ```module.exports``` para que sea exportado a otro archivo. En este caso se exporta el objeto database junto con sus propiedades. ```process.env``` se usa para llamar a las variables de entorno configuradas en el .env
+En este archivo se establece un ```module.exports``` para que sea exportado a otro archivo. En este caso se exporta el objeto database junto con sus propiedades. ```process.env``` se usa para llamar a las variables de entorno configuradas en el archivo ```.env```
 
 ```JS
 module.exports = {
@@ -189,4 +197,72 @@ var ticker = [];
 var propost = [];
 ```
 
+Diciendole a nuestra app que use ```Morgan``` inicializamos ```Morgan``` y le indicamos que será en desarrollo
+
+```JS
+app.use(morgan("dev"));
+```
+
+Diciendole a nuestra app que obtenga, creamos nuestro get mediante ```'/'``` indicandole que al ir a nuestra ruta principal en el servidor haga lo que sigue, se coloca ```async``` para indicar que va a ser una función asíncrona y se colocan los dos parámetros personalizados ```solicitud``` y ```respuesta```.
+
+```JS
+app.get('/', async (solicitud, respuesta) => {
+    ...
+};
+```
+
+Se asigna el nombre de la hoja de cálculo (en este caso viene en una variable de entorno)
+
+```JS
+const spreadsheetId = process.env.SPREADSHEET_ID;
+```
+
+Se obtiene al cliente mediante el ```auth``` creado anteriormente y la función ```getClient()``` para autorizar al usuario a que haga cambios o lectura en Google Api, se usa ```await``` para indicarle a la función que debe primera obtener el ```client``` antes de continuar.
+
+```JS
+const client = await auth.getClient();
+```
+
+Se hace la conexión a Google Spreadsheet indicando la versión de la API y pasandole el ```auth``` almacenado en nuestra constante ```client```
+
+```JS
+const googleSheet = google.sheets({ version: 'v4', auth: client });
+```
+
+Se almacenan los datos que vienen desde la hoja de cálculo usando el ```get``` usando como propiedades el ```auth```, el id de la hoja de cálculo que guardamos en ```spreadsheetId``` y el ```range``` que se coloca entre comillas con el nombre de la Hoja dentro del spreadsheet y el rango de celdas.
+
+```JS
+const request = (await googleSheet.spreadsheets.values.get({
+        auth,
+        spreadsheetId,
+        range: `${process.env.ID_HOJA}!A2:L`
+    })).data
+```
+
+Recorremos ```request``` mediante un ciclo ```for``` y a su vez otro para recorrer lo que hay dentro de cada iteración. Si el ciclo detecta que el valor en la posición [4] de cada iteración es diferente a indefinido, agrega a nuestras variables ```ticker``` y ```propost``` en cada iteración en su posición [0] y [4] respectivamente, valores.
+
+```JS
+for (let i = 0; i < request.values.length; i++) {
+    for (let x = 0; x < request.values[i].length; x++) {
+        if(request.values[i][4] != undefined) {
+            ticker.push(request.values[i][0]);
+            propost.push(request.values[i][4]);
+        }    
+    }
+};
+```
+
+Se crea una variable que solo almacene tickers que sean únicos (sin repeticiones)
+
+```JS
+var tickerSinDuplicados = [...new Set(ticker)];
+```
+
+Se llama a la función ```mostrarDatos``` y se le pasa como parámetro lo almacenado en ```tickerSinDuplicados```.
+En la función ```mostrarDatos``` que esta comentada con ```//``` se usó como pruebas y se mandaba como parámetros, la variable ```ticker``` y ```propost```
+
+```JS
+mostrarDatos(tickerSinDuplicados);
+//mostrarDatos(ticker, propost);
+```
 
