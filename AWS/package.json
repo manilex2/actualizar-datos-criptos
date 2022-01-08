@@ -1,0 +1,14 @@
+{
+    "name": "agregar-actualizar-datos",
+    "version": "1.0.0",
+    "description": "",
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "dotenv": "^10.0.0",
+        "googleapis": "^91.0.0",
+        "mysql2": "^2.3.0",
+        "node-fetch": "^2.6.1"
+    }
+}
