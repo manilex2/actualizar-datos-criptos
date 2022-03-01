@@ -1,7 +1,7 @@
 {
-    "name": "agregar-actualizar-datos",
+    "name": "actualizar-datos-criptos",
     "version": "1.0.0",
-    "description": "",
+    "description": "Función que actualiza diariamente la base de datos de seguimiento de criptos",
     "keywords": [],
     "author": "Manuel Pereira",
     "license": "ISC",
